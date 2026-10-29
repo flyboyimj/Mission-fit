@@ -18,7 +18,9 @@ npm run build:single # one self-contained HTML file → dist-single/
 
 The app is published to GitHub Pages by `.github/workflows/deploy-pages.yml` on every push to `main`. Tests run first, and nothing is published if they fail.
 
-Open the Pages address in Chrome on your phone and choose **⋮ → Install app**. The service worker caches the app shell, so it keeps working at a gym with poor signal.
+Live app: **https://flyboyimj.github.io/Mission-fit/**
+
+Open that address in Chrome on your phone and choose **⋮ → Install app**. The service worker caches the app shell, so it keeps working at a gym with poor signal.
 
 ## Architecture
 
