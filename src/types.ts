@@ -204,6 +204,8 @@ export interface Step {
   drill?: string;
   /** e.g. 'A1' when part of a superset. */
   group?: string;
+  /** Part of an alternating kettlebell pair (rest between exercises) rather than a superset. */
+  alternate?: boolean;
   blockId: string;
 }
 
@@ -234,6 +236,8 @@ export interface BlockItem {
   drill?: string;
   /** Superset/triset label: items sharing a group are done back-to-back. */
   group?: string;
+  /** Rest before the next exercise in the group (default: a 15 s switch). Kettlebell pairs use 30 s. */
+  switchSec?: number;
 }
 
 export interface Workout {
