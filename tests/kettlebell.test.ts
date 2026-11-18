@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { getExercise } from '../src/data/exercises';
 import { checkExercise, contextFrom, equipOptionFor } from '../src/engine/filter';
-import { generateWorkout } from '../src/engine/generator';
+import { generateWorkout, KB_ALT_REST_SEC } from '../src/engine/generator';
 import { defaultGym, defaultHome, defaultProfile } from '../src/store/storage';
 import type { Focus, Inventory, Profile, Style, WorkoutParams } from '../src/types';
 
@@ -66,5 +66,34 @@ describe('kettlebell-only workouts', () => {
     expect(r.ok).toBe(true);
     if (!r.ok) return;
     expect(r.workout.blocks.flatMap((b) => b.items).map((i) => i.exerciseId)).toContain('db-bench-neutral');
+  });
+
+  it('kettlebell lifts alternate in pairs with 30 s rest after every exercise', () => {
+    for (const focus of ['upper', 'push', 'pull', 'lower', 'full'] as Focus[]) {
+      const r = generateWorkout(params(kbOnly(defaultHome()), focus, 'strength'), { profile: p, sessions: [] });
+      expect(r.ok).toBe(true);
+      if (!r.ok) continue;
+      const block = r.workout.blocks.find((b) => b.kind === 'strength')!;
+      const paired = block.items.filter((i) => i.group);
+      expect(paired.length, focus).toBeGreaterThanOrEqual(4);
+      for (const it of paired) { expect(it.restSec).toBe(KB_ALT_REST_SEC); expect(it.switchSec).toBe(KB_ALT_REST_SEC); }
+      expect(block.description).toMatch(/alternate in pairs/);
+
+      // Steps: A1 set, 30 s rest, A2 set, 30 s rest, A1 set … — never two sets of the same lift in a row.
+      const a1 = paired[0].exerciseId, a2 = paired[1].exerciseId;
+      const strengthSteps = r.workout.steps.filter((s) => s.blockId === block.id && s.kind !== 'warmup');
+      const start = strengthSteps.findIndex((s) => s.exerciseId === a1 && s.kind === 'set');
+      const seq = strengthSteps.slice(start, start + 8);
+      expect(seq.map((s) => s.kind)).toEqual(['set', 'rest', 'set', 'rest', 'set', 'rest', 'set', 'rest']);
+      expect(seq.filter((s) => s.kind === 'set').map((s) => s.exerciseId)).toEqual([a1, a2, a1, a2]);
+      for (const s of seq.filter((x) => x.kind === 'rest').slice(0, 3)) expect(s.durationSec).toBe(30);
+    }
+  });
+
+  it('dumbbell workouts keep their usual rests (no 30 s alternation)', () => {
+    const r = generateWorkout(params({ ...defaultGym(), kettlebell: false }, 'upper', 'strength'), { profile: p, sessions: [] });
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    for (const it of r.workout.blocks.flatMap((b) => b.items)) expect(it.switchSec).toBeUndefined();
   });
 });

@@ -234,6 +234,8 @@ export interface BlockItem {
   drill?: string;
   /** Superset/triset label: items sharing a group are done back-to-back. */
   group?: string;
+  /** Rest before the next exercise in the group (default: a 15 s switch). Kettlebell pairs use 30 s. */
+  switchSec?: number;
 }
 
 export interface Workout {
