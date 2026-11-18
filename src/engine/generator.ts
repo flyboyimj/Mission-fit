@@ -945,7 +945,7 @@ export function blocksToSteps(blocks: Block[]): Step[] {
             steps.push({
               id: id(), kind: timed ? 'station' : 'set', exerciseId: ex.id, label: ex.name,
               durationSec: timed ? it.workSec! : setDurationSec(ex, it.repTarget?.[1] ?? 10), timed,
-              reps: it.reps, repTarget: it.repTarget, setNumber: s, totalSets: sets, rpe: it.rpe, note: it.note, group: it.group, blockId: b.id,
+              reps: it.reps, repTarget: it.repTarget, setNumber: s, totalSets: sets, rpe: it.rpe, note: it.note, group: it.group, alternate: it.group && it.switchSec ? true : undefined, blockId: b.id,
             });
             if (k < unit.length - 1) {
               const next = getExercise(unit[k + 1].exerciseId).name;

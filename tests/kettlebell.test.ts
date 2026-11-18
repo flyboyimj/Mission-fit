@@ -87,6 +87,7 @@ describe('kettlebell-only workouts', () => {
       expect(seq.map((s) => s.kind)).toEqual(['set', 'rest', 'set', 'rest', 'set', 'rest', 'set', 'rest']);
       expect(seq.filter((s) => s.kind === 'set').map((s) => s.exerciseId)).toEqual([a1, a2, a1, a2]);
       for (const s of seq.filter((x) => x.kind === 'rest').slice(0, 3)) expect(s.durationSec).toBe(30);
+      for (const s of seq.filter((x) => x.kind === 'set')) expect(s.alternate).toBe(true);
     }
   });
 
@@ -95,5 +96,6 @@ describe('kettlebell-only workouts', () => {
     expect(r.ok).toBe(true);
     if (!r.ok) return;
     for (const it of r.workout.blocks.flatMap((b) => b.items)) expect(it.switchSec).toBeUndefined();
+    for (const s of r.workout.steps) expect(s.alternate).toBeUndefined();
   });
 });

@@ -204,6 +204,8 @@ export interface Step {
   drill?: string;
   /** e.g. 'A1' when part of a superset. */
   group?: string;
+  /** Part of an alternating kettlebell pair (rest between exercises) rather than a superset. */
+  alternate?: boolean;
   blockId: string;
 }
 
