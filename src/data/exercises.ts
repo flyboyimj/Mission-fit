@@ -150,7 +150,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['Bell between mid-feet', 'Hips back, chest proud', 'Push the floor away'], breathing: EXHALE,
   },
   {
-    id: 'db-hip-thrust', name: 'Dumbbell Hip Thrust', kind: 'strength', equipOptions: [['dumbbell', 'bench']], pattern: 'hinge',
+    id: 'db-hip-thrust', name: 'Weighted Hip Thrust', kind: 'strength', equipOptions: [['dumbbell', 'bench'], ['kettlebell', 'bench']], pattern: 'hinge',
     muscles: ['glutes', 'hamstrings'], impact: 'none', main: true, limits: { knee: 'caution' },
     modifications: { knee: 'Adjust foot position until knees feel comfortable.' },
     cues: ['Upper back on bench edge', 'Chin tucked, ribs down', 'Drive through heels to full hip extension'], breathing: EXHALE,
@@ -179,7 +179,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['Hold a rack or wall for balance', 'Lower straight down', 'Front heel stays planted'], breathing: EXHALE,
   },
   {
-    id: 'reverse-lunge', name: 'Dumbbell Reverse Lunge', kind: 'strength', equipOptions: [['dumbbell'], ['kettlebell'], ['none']], pattern: 'lunge',
+    id: 'reverse-lunge', name: 'Weighted Reverse Lunge', kind: 'strength', equipOptions: [['dumbbell'], ['kettlebell'], ['none']], pattern: 'lunge',
     muscles: ['quads', 'glutes'], impact: 'none', unilateral: true, circuitOk: true, grip: 'neutral', limits: { knee: 'caution', foot: 'caution' },
     modifications: { knee: 'Shorter step and partial depth; switch to supported split squat if needed.', foot: 'Hold support; slower steps.' },
     cues: ['Step back softly', 'Front knee over mid-foot', 'Push through the front heel to return'], breathing: EXHALE,
@@ -196,7 +196,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['Whole foot on the box', 'Drive through the top leg — minimal push from the bottom foot', 'Step down slowly'], breathing: EXHALE,
   },
   {
-    id: 'calf-raise', name: 'Supported Dumbbell Calf Raise', kind: 'strength', equipOptions: [['dumbbell'], ['kettlebell'], ['none']], pattern: 'calves',
+    id: 'calf-raise', name: 'Supported Weighted Calf Raise', kind: 'strength', equipOptions: [['dumbbell'], ['kettlebell'], ['none']], pattern: 'calves',
     muscles: ['calves'], impact: 'none', circuitOk: true, limits: { foot: 'caution' },
     modifications: { foot: 'Bodyweight only, small range, stop if the arch or heel hurts.' },
     cues: ['Hold support', 'Rise slowly, lower slowly'], breathing: 'Steady breathing.',
@@ -228,14 +228,25 @@ export const EXERCISES: Exercise[] = [
     cues: ['Feet planted, shoulder blades back', 'Lower to chest level with control', 'Press up and slightly in'], breathing: EXHALE,
   },
   {
-    id: 'db-floor-press', name: 'Neutral-Grip Floor Press', kind: 'strength', equipOptions: [['dumbbell']], pattern: 'h-push',
+    id: 'kb-bench-press', name: 'Kettlebell Bench Press (neutral grip)', kind: 'strength', equipOptions: [['kettlebell', 'bench']], pattern: 'h-push',
+    muscles: ['chest', 'triceps', 'shoulders'], impact: 'none', main: true, grip: 'neutral', limits: { wrist: 'caution', shoulder: 'caution', hypertension: 'caution' },
+    modifications: { wrist: 'Hold the handle so the bell rests on the back of the forearm; wrist straight, not bent back.', shoulder: 'Stop the bells just above chest height.', hypertension: 'Moderate load; breathe out each press.' },
+    cues: ['Palms facing each other, bells resting on the forearms', 'Lower with control to chest level', 'Press up and slightly in'], breathing: EXHALE,
+  },
+  {
+    id: 'kb-chest-supported-row', name: 'Chest-Supported Kettlebell Row', kind: 'strength', equipOptions: [['kettlebell', 'bench']], pattern: 'h-pull',
+    muscles: ['upper-back', 'lats', 'rear-delts'], impact: 'none', main: true, grip: 'neutral', circuitOk: true, limits: {},
+    cues: ['Chest on an incline bench — no load on the lower back', 'Pull elbows toward hips', 'Lower with control'], breathing: EXHALE,
+  },
+  {
+    id: 'db-floor-press', name: 'Neutral-Grip Floor Press', kind: 'strength', equipOptions: [['dumbbell'], ['kettlebell']], pattern: 'h-push',
     muscles: ['chest', 'triceps'], impact: 'none', main: true, grip: 'neutral', circuitOk: true, limits: { wrist: 'caution' },
     modifications: { wrist: 'Palms facing; wrists stacked over elbows.' },
     cues: ['Upper arms touch the floor lightly — built-in reduced range', 'Press without bouncing'], breathing: EXHALE,
     tags: ['reduced-range'],
   },
   {
-    id: 'db-incline-press', name: 'Neutral-Grip Incline Press', kind: 'strength', equipOptions: [['dumbbell', 'bench']], pattern: 'h-push',
+    id: 'db-incline-press', name: 'Neutral-Grip Incline Press', kind: 'strength', equipOptions: [['dumbbell', 'bench'], ['kettlebell', 'bench']], pattern: 'h-push',
     muscles: ['chest', 'shoulders', 'triceps'], impact: 'none', grip: 'neutral', limits: { wrist: 'caution', shoulder: 'caution' },
     modifications: { wrist: 'Palms facing, wrists stacked.', shoulder: 'Low incline (15–30°), partial depth.' },
     cues: ['Low incline', 'Lower with control', 'Press up and in'], breathing: EXHALE,
@@ -263,7 +274,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['Shoulders down'], breathing: EXHALE, tags: ['loaded-wrist-extension'],
   },
   {
-    id: 'seated-db-press', name: 'Seated Neutral-Grip Shoulder Press', kind: 'strength', equipOptions: [['dumbbell', 'bench']], pattern: 'v-push',
+    id: 'seated-db-press', name: 'Seated Neutral-Grip Shoulder Press', kind: 'strength', equipOptions: [['dumbbell', 'bench'], ['kettlebell', 'bench']], pattern: 'v-push',
     muscles: ['shoulders', 'triceps'], impact: 'none', main: true, grip: 'neutral', limits: { shoulder: 'caution', hypertension: 'caution', wrist: 'caution' },
     modifications: { shoulder: 'Press slightly in front of the head; partial range.', hypertension: 'Moderate load, breathe out each rep, avoid grinding overhead.', wrist: 'Palms facing, wrists stacked.' },
     cues: ['Back supported on an upright bench', 'Press up, not back', 'Ribs down'], breathing: EXHALE,
@@ -275,7 +286,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['Back against the pad', 'Smooth press, controlled return'], breathing: EXHALE,
   },
   {
-    id: 'lateral-raise', name: 'Lateral Raise', kind: 'strength', equipOptions: [['dumbbell'], ['cable']], pattern: 'shoulder-iso',
+    id: 'lateral-raise', name: 'Lateral Raise', kind: 'strength', equipOptions: [['dumbbell'], ['kettlebell'], ['cable']], pattern: 'shoulder-iso',
     muscles: ['shoulders'], impact: 'none', circuitOk: true, grip: 'neutral', limits: { shoulder: 'caution' },
     modifications: { shoulder: 'Raise only to about 60° and use light weight.' },
     cues: ['Slight bend in elbows', 'Lead with elbows to shoulder height', 'Lower slowly'], breathing: EXHALE,
@@ -287,7 +298,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['Elbows pinned to sides', 'Spread the rope at the bottom'], breathing: EXHALE,
   },
   {
-    id: 'db-kickback', name: 'Supported Triceps Kickback', kind: 'strength', equipOptions: [['dumbbell', 'bench'], ['dumbbell']], pattern: 'arms',
+    id: 'db-kickback', name: 'Supported Triceps Kickback', kind: 'strength', equipOptions: [['dumbbell', 'bench'], ['kettlebell', 'bench'], ['dumbbell'], ['kettlebell']], pattern: 'arms',
     muscles: ['triceps'], impact: 'none', unilateral: true, grip: 'neutral', limits: { wrist: 'caution' },
     modifications: { wrist: 'Light weight, neutral grip.' },
     cues: ['Hand and knee on bench for support', 'Upper arm still, extend the elbow'], breathing: EXHALE,
@@ -341,7 +352,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['Chest on pad', 'Sweep arms back, slow return'], breathing: EXHALE,
   },
   {
-    id: 'hammer-curl', name: 'Hammer Curl', kind: 'strength', equipOptions: [['dumbbell']], pattern: 'arms',
+    id: 'hammer-curl', name: 'Hammer Curl', kind: 'strength', equipOptions: [['dumbbell'], ['kettlebell']], pattern: 'arms',
     muscles: ['biceps', 'forearms'], impact: 'none', circuitOk: true, grip: 'neutral', limits: { wrist: 'caution' },
     modifications: { wrist: 'Lighter load; keep wrists straight.' },
     cues: ['Elbows by your sides', 'No swinging'], breathing: EXHALE,
@@ -434,7 +445,7 @@ export const EXERCISES: Exercise[] = [
 
   // ───────────── ADDED WEIGHTED MOVEMENTS ─────────────
   {
-    id: 'db-glute-bridge', name: 'Dumbbell Glute Bridge', kind: 'strength', equipOptions: [['dumbbell'], ['kettlebell']], pattern: 'hinge',
+    id: 'db-glute-bridge', name: 'Weighted Glute Bridge', kind: 'strength', equipOptions: [['dumbbell'], ['kettlebell']], pattern: 'hinge',
     muscles: ['glutes', 'hamstrings'], impact: 'none', circuitOk: true, limits: { knee: 'caution' },
     modifications: { knee: 'Move feet a little farther from your hips.' },
     cues: ['Weight across the hip crease (pad it with a towel)', 'Press through heels, ribs down', 'Pause at the top'], breathing: EXHALE,
@@ -465,13 +476,13 @@ export const EXERCISES: Exercise[] = [
     cues: ['Balls of feet on the platform edge', 'Knees soft, never locked', 'Slow up, slow down'], breathing: 'Steady breathing.',
   },
   {
-    id: 'db-pullover', name: 'Dumbbell Pullover (light)', kind: 'strength', equipOptions: [['dumbbell', 'bench']], pattern: 'v-pull',
+    id: 'db-pullover', name: 'Overhead Pullover (light)', kind: 'strength', equipOptions: [['dumbbell', 'bench'], ['kettlebell', 'bench']], pattern: 'v-pull',
     muscles: ['lats', 'chest'], impact: 'none', circuitOk: true, grip: 'neutral', limits: { shoulder: 'caution', wrist: 'caution' },
     modifications: { shoulder: 'Lower only until arms are level with your head.', wrist: 'Cup the dumbbell end with both palms; light weight.' },
     cues: ['Lie on the bench, one dumbbell over chest', 'Arc it back with soft elbows', 'Pull it back over the chest using your lats'], breathing: EXHALE,
   },
   {
-    id: 'reverse-fly', name: 'Chest-Supported Reverse Fly', kind: 'strength', equipOptions: [['dumbbell', 'bench']], pattern: 'h-pull',
+    id: 'reverse-fly', name: 'Chest-Supported Reverse Fly', kind: 'strength', equipOptions: [['dumbbell', 'bench'], ['kettlebell', 'bench']], pattern: 'h-pull',
     muscles: ['rear-delts', 'upper-back'], impact: 'none', circuitOk: true, grip: 'neutral', limits: { shoulder: 'caution' },
     modifications: { shoulder: 'Light weight; raise only to shoulder height.' },
     cues: ['Chest on an incline bench', 'Sweep arms out, squeeze shoulder blades', 'Lower slowly'], breathing: EXHALE, tags: ['supported'],
@@ -483,7 +494,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['Handle at chest height', 'Row the elbow to your hip', 'Control the return'], breathing: EXHALE,
   },
   {
-    id: 'db-triceps-ext', name: 'Neutral-Grip Lying Triceps Extension', kind: 'strength', equipOptions: [['dumbbell', 'bench']], pattern: 'arms',
+    id: 'db-triceps-ext', name: 'Neutral-Grip Lying Triceps Extension', kind: 'strength', equipOptions: [['dumbbell', 'bench'], ['kettlebell', 'bench']], pattern: 'arms',
     muscles: ['triceps'], impact: 'none', circuitOk: true, grip: 'neutral', limits: { wrist: 'caution', shoulder: 'caution' },
     modifications: { wrist: 'Light weight, palms facing; keep wrists straight.', shoulder: 'Keep upper arms vertical.' },
     cues: ['Upper arms point at the ceiling', 'Bend at the elbows only', 'Extend smoothly'], breathing: EXHALE,
@@ -495,7 +506,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['Rope behind head, face away from the stack', 'Elbows point forward', 'Extend and spread the rope'], breathing: EXHALE,
   },
   {
-    id: 'seated-hammer-curl', name: 'Seated Alternating Hammer Curl', kind: 'strength', equipOptions: [['dumbbell', 'bench']], pattern: 'arms',
+    id: 'seated-hammer-curl', name: 'Seated Alternating Hammer Curl', kind: 'strength', equipOptions: [['dumbbell', 'bench'], ['kettlebell', 'bench']], pattern: 'arms',
     muscles: ['biceps', 'forearms'], impact: 'none', circuitOk: true, grip: 'neutral', limits: { wrist: 'caution' },
     modifications: { wrist: 'Lighter load; keep wrists straight.' },
     cues: ['Back against an upright bench', 'One arm at a time, no swinging'], breathing: EXHALE,
@@ -526,7 +537,7 @@ export const EXERCISES: Exercise[] = [
     cues: ['Stand tall, weight at chest', 'Press it straight out, pause 2 s, bring it back', "Don't let your back arch"], breathing: 'Exhale as you press out.',
   },
   {
-    id: 'db-side-bend', name: 'Dumbbell Side Bend (small range)', kind: 'core', equipOptions: [['dumbbell'], ['kettlebell']], pattern: 'core',
+    id: 'db-side-bend', name: 'Weighted Side Bend (small range)', kind: 'core', equipOptions: [['dumbbell'], ['kettlebell']], pattern: 'core',
     muscles: ['obliques'], impact: 'none', unilateral: true, grip: 'neutral', limits: { lowBack: 'caution' },
     modifications: { lowBack: 'Light weight, a few inches of range only.' },
     cues: ['Weight in one hand, other hand on hip', 'Bend sideways a few inches, return tall'], breathing: 'Exhale as you return to tall.',
@@ -561,13 +572,13 @@ export const EXERCISES: Exercise[] = [
     cues: ['Elbow behind the fist on hooks', 'Bend the knees to dig to the body', 'Return to guard after each shot'], breathing: 'Short exhale with every punch.', tags: ['boxing'],
   },
   {
-    id: 'front-raise', name: 'Neutral-Grip Front Raise', kind: 'strength', equipOptions: [['dumbbell'], ['cable']], pattern: 'shoulder-iso',
+    id: 'front-raise', name: 'Neutral-Grip Front Raise', kind: 'strength', equipOptions: [['dumbbell'], ['kettlebell'], ['cable']], pattern: 'shoulder-iso',
     muscles: ['shoulders'], impact: 'none', circuitOk: true, grip: 'neutral', limits: { shoulder: 'caution' },
     modifications: { shoulder: 'Light weight; raise only to shoulder height.' },
     cues: ['Palms facing each other', 'Raise to shoulder height, no swinging', 'Lower for 2–3 seconds'], breathing: EXHALE,
   },
   {
-    id: 'incline-y-raise', name: 'Chest-Supported Y-Raise', kind: 'strength', equipOptions: [['dumbbell', 'bench']], pattern: 'shoulder-iso',
+    id: 'incline-y-raise', name: 'Chest-Supported Y-Raise', kind: 'strength', equipOptions: [['dumbbell', 'bench'], ['kettlebell', 'bench']], pattern: 'shoulder-iso',
     muscles: ['shoulders', 'upper-back'], impact: 'none', circuitOk: true, grip: 'neutral', limits: { shoulder: 'caution' },
     modifications: { shoulder: 'Very light; raise only as high as is comfortable.' },
     cues: ['Chest on an incline bench, thumbs up', 'Raise arms in a Y shape', 'Light weight — this is about control'], breathing: EXHALE, tags: ['supported'],
@@ -579,19 +590,19 @@ export const EXERCISES: Exercise[] = [
     cues: ['Dumbbells pressed together, palms facing', 'Elbows close to your sides', 'Press straight up'], breathing: EXHALE,
   },
   {
-    id: 'seated-overhead-ext', name: 'Seated Two-Hand Overhead Extension', kind: 'strength', equipOptions: [['dumbbell', 'bench'], ['dumbbell']], pattern: 'arms',
+    id: 'seated-overhead-ext', name: 'Seated Two-Hand Overhead Extension', kind: 'strength', equipOptions: [['dumbbell', 'bench'], ['kettlebell', 'bench'], ['dumbbell'], ['kettlebell']], pattern: 'arms',
     muscles: ['triceps'], impact: 'none', grip: 'neutral', limits: { shoulder: 'caution', wrist: 'caution', lowBack: 'caution' },
     modifications: { shoulder: 'Use the lying extension instead if overhead is uncomfortable.', wrist: 'Cup the top of the dumbbell with both palms.', lowBack: 'Back supported on an upright bench; ribs down.' },
     cues: ['Sit tall against an upright bench', 'Lower the dumbbell behind your head', 'Elbows point forward'], breathing: EXHALE,
   },
   {
-    id: 'cross-body-curl', name: 'Cross-Body Hammer Curl', kind: 'strength', equipOptions: [['dumbbell']], pattern: 'arms',
+    id: 'cross-body-curl', name: 'Cross-Body Hammer Curl', kind: 'strength', equipOptions: [['dumbbell'], ['kettlebell']], pattern: 'arms',
     muscles: ['biceps', 'forearms'], impact: 'none', circuitOk: true, grip: 'neutral', unilateral: true, limits: { wrist: 'caution' },
     modifications: { wrist: 'Lighter load; keep the wrist straight.' },
     cues: ['Curl across your body toward the opposite shoulder', 'Elbow stays at your side'], breathing: EXHALE,
   },
   {
-    id: 'incline-preacher-curl', name: 'Bench-Supported Hammer Curl', kind: 'strength', equipOptions: [['dumbbell', 'bench']], pattern: 'arms',
+    id: 'incline-preacher-curl', name: 'Bench-Supported Hammer Curl', kind: 'strength', equipOptions: [['dumbbell', 'bench'], ['kettlebell', 'bench']], pattern: 'arms',
     muscles: ['biceps', 'forearms'], impact: 'none', grip: 'neutral', unilateral: true, limits: { wrist: 'caution', shoulder: 'caution' },
     modifications: { wrist: 'Light weight; neutral grip only.', shoulder: 'Keep the bench pad low on the upper arm.' },
     cues: ['Upper arm resting on an incline bench back', 'Curl with a neutral grip', 'Lower all the way under control'], breathing: EXHALE, tags: ['supported'],
@@ -630,13 +641,13 @@ export const EXERCISES: Exercise[] = [
     cues: ['Upright bench under the bar', 'Hands just outside shoulders', 'Press up, lower to chin height'], breathing: EXHALE,
   },
   {
-    id: 'db-leg-curl', name: 'Prone Dumbbell Leg Curl', kind: 'strength', equipOptions: [['dumbbell', 'bench']], pattern: 'hinge',
+    id: 'db-leg-curl', name: 'Prone Weighted Leg Curl', kind: 'strength', equipOptions: [['dumbbell', 'bench'], ['kettlebell', 'bench']], pattern: 'hinge',
     muscles: ['hamstrings'], impact: 'none', grip: 'none', limits: { knee: 'caution', lowBack: 'caution' },
     modifications: { knee: 'Light dumbbell, smooth range; stop short of a full squeeze if knees complain.', lowBack: 'Squeeze glutes and keep hips pressed into the bench — no arching.' },
     cues: ['Lie face-down on a flat bench, knees just off the end', 'Hold a light dumbbell between your feet', 'Curl heels toward glutes, lower slowly'], breathing: EXHALE,
   },
   {
-    id: 'seated-calf-raise', name: 'Seated Dumbbell Calf Raise', kind: 'strength', equipOptions: [['dumbbell', 'bench']], pattern: 'calves',
+    id: 'seated-calf-raise', name: 'Seated Weighted Calf Raise', kind: 'strength', equipOptions: [['dumbbell', 'bench'], ['kettlebell', 'bench']], pattern: 'calves',
     muscles: ['calves'], impact: 'none', grip: 'none', limits: { foot: 'caution' },
     modifications: { foot: 'Light weight, partial range; stop if the arch or heel hurts.' },
     cues: ['Sit on a bench, balls of feet on a plate or step', 'Dumbbells resting on your knees', 'Lift heels slowly, pause, lower slowly'], breathing: 'Steady breathing.',

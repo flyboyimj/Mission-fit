@@ -16,7 +16,7 @@ describe('exercise examples', () => {
       expect(u.searchParams.get('search_query')).toBe(`${q} proper form`);
     }
     expect(demoQuery(getExercise('db-bench-neutral'))).toBe('neutral grip dumbbell bench press');
-    expect(demoQuery(getExercise('db-pullover'))).toBe('Dumbbell Pullover');
+    expect(demoQuery(getExercise('db-pullover'))).toBe('Overhead Pullover');
   });
 
   it('shows "Watch an example" in the mission brief and the library', () => {

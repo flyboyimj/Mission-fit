@@ -141,7 +141,8 @@ function weightRange(ex: Exercise, inv: Inventory): string {
   const opt = equipOptionFor(ex, inv) ?? [];
   if (opt.includes('dumbbell') || opt.includes('kettlebell')) {
     if (!w.length) return '';
-    return ` Available: ${Math.min(...w)}–${Math.max(...w)} lb.`;
+    const tool = opt.includes('kettlebell') ? 'Kettlebells' : 'Dumbbells';
+    return ` ${tool}: ${Math.min(...w)}–${Math.max(...w)} lb available.`;
   }
   if (opt.some((e) => e.startsWith('machine') || e === 'cable')) return ' Machine and cable stacks vary — note the pin number in your log.';
   return '';
@@ -579,8 +580,8 @@ interface SplitGroup { label: string; slots: Slot[]; fallback?: Pattern }
 export const SPLIT_GROUPS: Record<'push' | 'pull', SplitGroup[]> = {
   push: [
     { label: 'chest', slots: [
-      { ...S('h-push', 'flat bench', true, 'chest'), prefer: ['db-bench-neutral', 'machine-chest-press', 'db-floor-press'] },
-      { ...S('h-push', 'incline press', false, 'chest'), prefer: ['db-incline-press', 'machine-chest-press', 'cable-chest-press', 'db-floor-press'] },
+      { ...S('h-push', 'flat bench', true, 'chest'), prefer: ['db-bench-neutral', 'machine-chest-press', 'kb-bench-press', 'db-floor-press'] },
+      { ...S('h-push', 'incline press', false, 'chest'), prefer: ['db-incline-press', 'machine-chest-press', 'cable-chest-press', 'db-floor-press', 'kb-bench-press'] },
       { ...S('h-push', 'chest fly', false, 'chest'), prefer: ['machine-fly', 'cable-fly', 'db-fly'] },
     ] },
     { label: 'shoulders', slots: [
