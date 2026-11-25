@@ -167,6 +167,8 @@ export interface WorkoutParams {
   inventory: Inventory;
   readiness: Readiness;
   includeCarries: boolean;
+  /** Rest between sets of every lift: 30 or 45 s (default 30). */
+  restSec?: 30 | 45;
   /** When set, the strength work is built only from these body parts (overrides focus). */
   bodyParts?: BodyPart[];
   intervals?: Partial<IntervalConfig>;

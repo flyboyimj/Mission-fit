@@ -133,7 +133,7 @@ describe('generator', () => {
     if (!r.ok) throw new Error(r.error);
     const sb = r.workout.blocks.find((b) => b.kind === 'strength')!;
     for (const it of sb.items) {
-      expect(it.restSec).toBeGreaterThanOrEqual(45);
+      expect(it.restSec).toBe(30);
       expect(getExercise(it.exerciseId).breathing).toMatch(/breath|Exhale|Breathe/i);
     }
   });
@@ -310,7 +310,9 @@ describe('push / pull days', () => {
     expect(ids).toContain('machine-shoulder-press');
   });
   it('supersets run back-to-back in the active workout steps', () => {
-    const w = run('push', 45);
+    const r = generateWorkout(params({ style: 'strength', focus: 'push', duration: 45, restSec: 45 }), { profile: p, sessions: [], now: NOW });
+    if (!r.ok) throw new Error(r.error);
+    const w = r.workout;
     const sets = w.steps.filter((s) => s.kind === 'set');
     expect(sets[0].group).toBe('A1');
     const i = w.steps.indexOf(sets[0]);
@@ -581,3 +583,31 @@ describe('complete substitution search', () => {
     expect(pu.reasons.join()).toMatch(/avoid list|wrists/);
   });
 });
+
+describe('rest between sets: 30 or 45 s', () => {
+  const p = defaultProfile();
+  const restSteps = (w: { steps: { kind: string; durationSec: number; blockId: string }[] }) =>
+    w.steps.filter((s) => s.blockId === 'strength' && s.kind === 'rest').map((s) => s.durationSec);
+  for (const rest of [30, 45] as const) {
+    it(`every lift and every rest step uses ${rest} s when chosen`, () => {
+      for (const style of ['strength', 'strength-cond'] as Style[])
+        for (const focus of ['full', 'upper', 'lower', 'push', 'pull'] as Focus[])
+          for (const duration of [20, 45, 60] as Duration[]) {
+            const r = generateWorkout(params({ style, focus, duration, restSec: rest }), { profile: p, sessions: [], now: NOW });
+            if (!r.ok) continue;
+            const sb = r.workout.blocks.find((b) => b.kind === 'strength');
+            if (!sb) continue;
+            for (const it of sb.items) expect(it.restSec, `${style} ${focus} ${duration}`).toBe(rest);
+            const steps = restSteps(r.workout);
+            expect(steps.length).toBeGreaterThan(0);
+            for (const d of steps) expect(d, `${style} ${focus} ${duration}`).toBe(rest);
+            expect(sb.description).toContain(`${rest} s`);
+          }
+    });
+  }
+  it('defaults to 30 s when nothing has been chosen', () => {
+    const r = generateWorkout(params({ restSec: undefined }), { profile: p, sessions: [], now: NOW });
+    if (!r.ok) throw new Error(r.error);
+    expect(new Set(restSteps(r.workout))).toEqual(new Set([30]));
+  });
+}); 

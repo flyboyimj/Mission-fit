@@ -91,7 +91,21 @@ describe('kettlebell-only workouts', () => {
     }
   });
 
-  it('dumbbell workouts keep their usual rests (no 30 s alternation)', () => {
+  it('kettlebell pairs use 45 s rests when 45 s is chosen', () => {
+    for (const focus of ['upper', 'push', 'pull'] as Focus[]) {
+      const r = generateWorkout({ ...params(kbOnly(defaultHome()), focus, 'strength'), restSec: 45 }, { profile: p, sessions: [] });
+      expect(r.ok).toBe(true);
+      if (!r.ok) continue;
+      const block = r.workout.blocks.find((b) => b.kind === 'strength')!;
+      const paired = block.items.filter((i) => i.group);
+      expect(paired.length, focus).toBeGreaterThanOrEqual(4);
+      for (const it of paired) { expect(it.restSec).toBe(45); expect(it.switchSec).toBe(45); }
+      for (const s of r.workout.steps.filter((x) => x.blockId === block.id && x.kind === 'rest')) expect(s.durationSec).toBe(45);
+      expect(block.description).toMatch(/rest 45 s/);
+    }
+  });
+
+  it('dumbbell workouts do not alternate (no kettlebell pairing)', () => {
     const r = generateWorkout(params({ ...defaultGym(), kettlebell: false }, 'upper', 'strength'), { profile: p, sessions: [] });
     expect(r.ok).toBe(true);
     if (!r.ok) return;

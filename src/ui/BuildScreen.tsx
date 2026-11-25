@@ -35,7 +35,7 @@ export function BuildScreen({ onBrief, go }: { onBrief: (w: Workout) => void; go
 
   const run = (params: WorkoutParams) => {
     const r = generateWorkout(params, { profile: data.profile, sessions: data.sessions });
-    update((d) => ({ ...d, lastParams: { goal: params.goal, focus: params.focus, style: params.style, location: params.location, duration: params.duration, includeCarries: params.includeCarries, cardioMachine: params.cardioMachine, intervals: params.intervals, bodyParts: params.bodyParts } }));
+    update((d) => ({ ...d, lastParams: { goal: params.goal, focus: params.focus, style: params.style, location: params.location, duration: params.duration, includeCarries: params.includeCarries, restSec: params.restSec, cardioMachine: params.cardioMachine, intervals: params.intervals, bodyParts: params.bodyParts } }));
     if (r.ok) onBrief(r.workout);
     else setError({ error: r.error, details: r.details });
   };
@@ -81,6 +81,8 @@ export function BuildScreen({ onBrief, go }: { onBrief: (w: Workout) => void; go
         {!p.bodyParts?.length && (p.focus === 'push' || p.focus === 'pull') && (p.style === 'strength' || p.style === 'strength-cond') && (
           <p className="muted small">{p.focus === 'push' ? 'Push day: 3 chest · 3 shoulders · 3 triceps.' : 'Pull day: 3 back · 3 biceps.'} Lifting only, at least 45 minutes so every exercise fits.</p>
         )}
+        <Chips id="rest" label="Rest between sets" value={p.restSec ?? 30} onChange={(v: 30 | 45) => set({ restSec: v })}
+          options={[{ value: 30, label: '30 s' }, { value: 45, label: '45 s' }]} />
         <Chips id="duration" label="Duration (includes warm-up & cool-down)" value={p.duration} onChange={(v: Duration) => set({ duration: v })}
           options={([15, 20, 30, 45, 60] as Duration[]).map((n) => ({ value: n, label: `${n} min` }))} />
       </Section>

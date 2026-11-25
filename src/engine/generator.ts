@@ -20,7 +20,13 @@ export interface GenContext {
 
 export const WARMUP_MIN: Record<Duration, number> = { 15: 3, 20: 4, 30: 5, 45: 6, 60: 7 };
 export const COOLDOWN_MIN: Record<Duration, number> = { 15: 2, 20: 3, 30: 4, 45: 5, 60: 5 };
-export const STRENGTH_TRANSITION_SEC = 45;
+/** Rest between sets of every lift: the user picks 30 s or 45 s (Build screen). */
+export const REST_CHOICES = [30, 45] as const;
+export type RestChoice = (typeof REST_CHOICES)[number];
+export const DEFAULT_REST_SEC: RestChoice = 30;
+export function restChoice(p: Pick<WorkoutParams, 'restSec'>): RestChoice {
+  return p.restSec === 45 ? 45 : DEFAULT_REST_SEC;
+}
 
 export function mulberry32(seed: number) {
   let a = seed >>> 0;
@@ -381,13 +387,14 @@ function strengthItem(ex: Exercise, sch: Scheme, st: PickState, maxRpe: number, 
     item.loadGuidance = `Choose a load that leaves about ${10 - Math.min(sch.rpe[1], maxRpe)} reps in reserve.${weightRange(ex, inv)}`;
     if (firstMain) item.rampUp = true;
   }
+  item.restSec = restChoice(st.params);
   return item;
 }
 
 export function strengthItemCost(ex: Exercise, item: BlockItem): number {
   const sets = item.sets ?? 1;
   const per = item.workSec ?? setDurationSec(ex, item.repTarget?.[1] ?? 10);
-  return sets * per + (sets - 1) * item.restSec + Math.max(item.restSec, STRENGTH_TRANSITION_SEC);
+  return sets * per + sets * item.restSec;
 }
 
 function buildStrength(budget: number, st: PickState, maxRpe: number, out: BuildOut, includeCarry: boolean, slotsOverride?: Slot[], restScale = 1) {
@@ -420,11 +427,7 @@ function buildStrength(budget: number, st: PickState, maxRpe: number, out: Build
     }
     const isMain = !!(slot.main && ex.main);
     const sch = strengthScheme(p.goal, isMain, p.planWeek, low);
-    sch.rest = Math.max(60, Math.round((sch.rest * restScale) / 15) * 15);
-    const kb = (equipOptionFor(ex, p.inventory) ?? []).includes('kettlebell');
-    if (kb) sch.rest = KB_ALT_REST_SEC;
     const item = strengthItem(ex, sch, st, maxRpe, isMain && !firstMainDone);
-    if (kb && !item.workSec) item.restSec = KB_ALT_REST_SEC;
     if (short) item.rampUp = false;
     const ramp = item.rampUp ? 90 : 0;
     let cost = strengthItemCost(ex, item) + ramp;
@@ -459,7 +462,8 @@ function buildStrength(budget: number, st: PickState, maxRpe: number, out: Build
   if (carryItem) { items.push(carryItem); out.patterns.add('carry'); }
   const kbLayout = kbPairLayout(items.map((_, i) => i), items, p.inventory);
   const kbPaired = kbLayout.some((g) => g.length > 1);
-  const finalItems = kbPaired ? applyKbPairs(items, kbLayout) : items;
+  const rest = restChoice(p);
+  const finalItems = kbPaired ? applyKbPairs(items, kbLayout, rest) : items;
   // A non-core focus that ends up with only core work would be misleading — report it instead.
   const substantive = items.filter((i) => !['core'].includes(getExercise(i.exerciseId).pattern));
   if (!items.length || (!slotsOverride && p.focus !== 'core' && substantive.length === 0)) {
@@ -470,7 +474,7 @@ function buildStrength(budget: number, st: PickState, maxRpe: number, out: Build
     id: 'strength',
     title: p.style === 'strength-cond' ? 'Strength Block (first, while fresh)' : 'Strength Block',
     kind: 'strength',
-    description: kbPaired ? `${KB_DESC} Log weight and reps each set so progress can be tracked.` : 'Controlled reps, full rest. Log weight and reps each set so progress can be tracked.',
+    description: kbPaired ? `${kbDesc(rest)} Log weight and reps each set so progress can be tracked.` : `Controlled reps, ${rest} s rest between sets. Log weight and reps each set so progress can be tracked.`,
     items: finalItems,
   });
   return used;
@@ -581,8 +585,8 @@ function buildIntervals(budget: number, st: PickState, cap: { maxRpe: number; vi
 // supersets/trisets (back-to-back with short transitions) keep the full count.
 
 const SUPERSET_MOVE_SEC = 15;
-/** Kettlebell lifts alternate in pairs (A1, A2, A1, A2…) with this much rest after every exercise. */
-export const KB_ALT_REST_SEC = 30;
+/** Kettlebell lifts alternate in pairs (A1, A2, A1, A2…) with the chosen rest after every exercise (default 30 s). */
+export const KB_ALT_REST_SEC = DEFAULT_REST_SEC;
 
 function usesKettlebell(item: BlockItem, inv: Inventory): boolean {
   return (equipOptionFor(getExercise(item.exerciseId), inv) ?? []).includes('kettlebell');
@@ -604,7 +608,7 @@ function kbPairLayout(order: number[], items: BlockItem[], inv: Inventory): numb
   }
   return out;
 }
-function applyKbPairs(items: BlockItem[], layout: number[][]): BlockItem[] {
+function applyKbPairs(items: BlockItem[], layout: number[][], rest: number): BlockItem[] {
   const ordered: BlockItem[] = [];
   let letter = 0;
   for (const g of layout) {
@@ -612,13 +616,13 @@ function applyKbPairs(items: BlockItem[], layout: number[][]): BlockItem[] {
     g.forEach((i, k) => {
       const it = items[i];
       it.group = label ? `${label}${k + 1}` : undefined;
-      if (label) { it.restSec = KB_ALT_REST_SEC; it.switchSec = KB_ALT_REST_SEC; }
+      if (label) { it.restSec = rest; it.switchSec = rest; }
       ordered.push(it);
     });
   }
   return ordered;
 }
-const KB_DESC = `Kettlebell lifts alternate in pairs: one set of A1, rest ${KB_ALT_REST_SEC} s, one set of A2, rest ${KB_ALT_REST_SEC} s, and repeat for all sets.`;
+const kbDesc = (rest: number) => `Kettlebell lifts alternate in pairs: one set of A1, rest ${rest} s, one set of A2, rest ${rest} s, and repeat for all sets.`;
 
 interface SplitGroup { label: string; slots: Slot[]; fallback?: Pattern }
 export const SPLIT_GROUPS: Record<'push' | 'pull', SplitGroup[]> = {
@@ -697,7 +701,7 @@ function groupCost(items: BlockItem[], idxs: number[], rest: number): number {
   const sets = Math.min(...idxs.map((i) => items[i].sets ?? 3));
   const work = idxs.reduce((t, i) => t + setDurationSec(getExercise(items[i].exerciseId), items[i].repTarget?.[1] ?? 12), 0);
   const sw = items[idxs[0]].switchSec ?? SUPERSET_MOVE_SEC;
-  return sets * work + sets * (idxs.length - 1) * sw + (sets - 1) * rest + (items[idxs[0]].switchSec ? rest : Math.max(rest, STRENGTH_TRANSITION_SEC));
+  return sets * work + sets * (idxs.length - 1) * sw + sets * rest;
 }
 
 /** Round-robin across muscle groups; a round with more than 3 exercises is split so no superset exceeds 3. */
@@ -737,11 +741,9 @@ function buildSplit(focus: 'push' | 'pull' | 'custom', budget: number, st: PickS
   });
   if (!items.length) return 0;
 
-  const restOf = (i: number) => items[i].restSec;
-  const isMainIdx = (i: number) => !!getExercise(items[i].exerciseId).main;
-  /** Rest for a unit: straight sets keep full rest (or 75/60 s compressed); supersets 60 s (45 s compressed). */
-  const unitRest = (g: number[], compress: boolean) =>
-    kbMode && kbRest(g) !== null ? KB_ALT_REST_SEC : g.length === 1 ? (compress ? Math.min(restOf(g[0]), isMainIdx(g[0]) ? 75 : 60) : restOf(g[0])) : compress ? 45 : 60;
+  /** Every unit (straight sets, supersets, kettlebell pairs) rests the user's chosen 30 or 45 s. */
+  const chosenRest = restChoice(p);
+  const unitRest = (_g: number[], _compress: boolean) => chosenRest;
   const costOf = (layout: number[][], compress: boolean) => layout.reduce((t, g) => t + groupCost(items, g, unitRest(g, compress)), 0);
 
   // Candidate layouts, most relaxed first.
@@ -755,12 +757,11 @@ function buildSplit(focus: 'push' | 'pull' | 'custom', budget: number, st: PickS
   const kbMode = kbCount >= 2;
   const kbOf = (lists: number[][]) => {
     const lay = kbPairLayout(zipGroups(lists).flat(), items, inv);
-    for (const g of lay) for (const i of g) items[i].switchSec = g.length > 1 ? KB_ALT_REST_SEC : undefined;
+    for (const g of lay) for (const i of g) items[i].switchSec = g.length > 1 ? chosenRest : undefined;
     return lay;
   };
   const zipped = kbMode ? kbOf(byGroup) : zipGroups(byGroup);
   const layoutOf = (lists: number[][]) => (kbMode ? kbOf(lists) : zipGroups(lists));
-  const kbRest = (g: number[]) => (usesKettlebell(items[g[0]], inv) ? KB_ALT_REST_SEC : null);
 
   const options: { layout: number[][]; compress: boolean }[] = kbMode ? [{ layout: zipped, compress: false }] : [
     { layout: straight, compress: false },
@@ -834,8 +835,8 @@ function buildSplit(focus: 'push' | 'pull' | 'custom', budget: number, st: PickS
     id: 'strength',
     title: focus === 'custom' ? `Custom — ${groups.map((g) => g.label.charAt(0).toUpperCase() + g.label.slice(1)).join(' · ')}` : focus === 'push' ? 'Push Day — Chest · Shoulders · Triceps' : 'Pull Day — Back · Biceps',
     kind: 'strength',
-    description: kbMode ? `${per} — 3–4 sets of 8–12 each. ${KB_DESC} Log weight and reps every set.`
-      : `${per} — 3–4 sets of 8–12 each. ${structure}${structure === 'Straight sets' ? '' : `: do the lettered exercises back-to-back (${SUPERSET_MOVE_SEC}s to switch), then rest`}. Log weight and reps every set.`,
+    description: kbMode ? `${per} — 3–4 sets of 8–12 each. ${kbDesc(chosenRest)} Log weight and reps every set.`
+      : `${per} — 3–4 sets of 8–12 each. ${structure}${structure === 'Straight sets' ? ` with ${chosenRest} s rest between sets` : `: do the lettered exercises back-to-back (${SUPERSET_MOVE_SEC}s to switch), then rest ${chosenRest} s`}. Log weight and reps every set.`,
     items: ordered,
   });
   return used;
@@ -959,7 +960,7 @@ export function blocksToSteps(blocks: Block[]): Step[] {
             const rest = unit[unit.length - 1].restSec;
             const alt = unit.length > 1 && !!unit[0].switchSec;
             const label = s === sets ? 'Rest & set up next' : alt ? `Rest — then ${getExercise(unit[0].exerciseId).name}` : unit.length > 1 ? `Rest — then round ${s + 1}` : 'Rest';
-            steps.push({ id: id(), kind: 'rest', label, durationSec: s === sets && !alt ? Math.max(rest, STRENGTH_TRANSITION_SEC) : rest, timed: true, blockId: b.id });
+            steps.push({ id: id(), kind: 'rest', label, durationSec: rest, timed: true, blockId: b.id });
           }
         }
       });
@@ -1242,8 +1243,12 @@ export function surpriseParams(base: WorkoutParams, gen: GenContext, seed: numbe
 
 /** "Different version": same goal, equipment, restrictions and recovery logic; main lifts kept, accessories rotated. */
 export function differentVersion(w: Workout, gen: GenContext): GenerateResult {
-  const accessories = w.blocks.flatMap((b) => b.items.map((i) => i.exerciseId)).filter((id) => !getExercise(id).main);
-  return generateWorkout({ ...w.params, seed: w.params.seed + 7919, avoidIds: accessories }, gen);
+  const ids = w.blocks.flatMap((b) => b.items.map((i) => i.exerciseId));
+  const accessories = ids.filter((id) => !getExercise(id).main);
+  // Main lifts stay put: anchor each one to its movement pattern so a new seed can't swap it.
+  const anchors: Partial<Record<Pattern, string>> = { ...w.params.anchors };
+  for (const id of ids) { const ex = getExercise(id); if (ex.main && !anchors[ex.pattern]) anchors[ex.pattern] = id; }
+  return generateWorkout({ ...w.params, seed: w.params.seed + 7919, avoidIds: accessories, anchors }, gen);
 }
 
 export function workoutMuscles(w: Workout): string[] {
