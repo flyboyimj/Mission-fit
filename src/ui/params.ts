@@ -17,6 +17,7 @@ export function defaultParams(data: AppData): WorkoutParams {
     inventory: inventoryFor(data, loc),
     readiness: { energy: 3, soreness: 2, discomfort: [] },
     includeCarries: data.lastParams?.includeCarries ?? true,
+    restSec: data.lastParams?.restSec ?? 30,
     cardioMachine: data.lastParams?.cardioMachine,
     intervals: data.lastParams?.intervals,
     seed: Math.floor(Math.random() * 1e9),

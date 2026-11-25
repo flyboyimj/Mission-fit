@@ -347,7 +347,7 @@ export function ActiveWorkout({ workout, onExit, resume }: { workout: Workout; o
         <p className="phase">
           {step ? KIND_LABEL[step.kind] : ''}
           {step?.setNumber ? ` ${step.setNumber} of ${step.totalSets}` : ''}
-          {step?.group ? ` · superset ${step.group}` : ''}
+          {step?.group ? ` · ${step.alternate ? 'alternate' : 'superset'} ${step.group}` : ''}
           {step?.round ? ` · round ${step.round}/${step.totalRounds}` : ''}
         </p>
         <h1 className="active-name">{isRest ? (step!.kind === 'interval-rest' ? 'Easy — recover' : step!.label) : (ex?.name ?? step?.label)}</h1>

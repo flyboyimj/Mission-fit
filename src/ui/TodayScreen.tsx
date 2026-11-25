@@ -8,7 +8,7 @@ import type { ActiveSnapshot } from '../store/activeSession';
 import { useStore } from '../store/AppStore';
 import type { Readiness, Workout } from '../types';
 import { pickVerse, type VerseTheme } from '../data/verses';
-import { Banner, Section, SafetyContent, Sheet, Toggle, VerseCard } from './kit';
+import { Banner, Chips, Section, SafetyContent, Sheet, Toggle, VerseCard } from './kit';
 import { defaultParams, planParams } from './params';
 import { ReadinessCheck } from './Readiness';
 
@@ -187,6 +187,11 @@ export function TodayScreen({ onBrief, go, resume, onResume, onDiscard }: { onBr
 
       <Sheet open={!!checkOpen} onClose={() => setCheckOpen(null)} title="Readiness check">
         <ReadinessCheck value={readiness} onChange={setReadiness} />
+        {checkOpen === 'plan' && (
+          <Chips id="today-rest" label="Rest between sets" value={data.lastParams?.restSec ?? 30}
+            onChange={(v: 30 | 45) => update((d) => ({ ...d, lastParams: { ...(d.lastParams ?? {}), restSec: v } }))}
+            options={[{ value: 30, label: '30 s' }, { value: 45, label: '45 s' }]} />
+        )}
         {(readiness.energy <= 2 || readiness.soreness >= 4) && <Banner tone="info">Low readiness: the mission will be lighter. A recovery session is a smart choice today.</Banner>}
         <button type="button" className="btn primary big" onClick={launch}>Generate briefing</button>
       </Sheet>
